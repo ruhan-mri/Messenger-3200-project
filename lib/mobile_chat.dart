@@ -31,13 +31,16 @@ class MobileChatScreen extends StatelessWidget {
         ],
       ),
       body: Column(
+        //Column is a widget that displays its children in a vertical array
         //chat list
         children: [
           const Expanded(
+            // expands a child of a Row, Column, or Flex so that the child fills the available space.
             child: ChatList(),
           ),
           TextField(
             decoration: InputDecoration(
+              // InputDecorator displays the visual elements of a Material Design text field around its input child.
               filled: true,
               fillColor: mobileChatBoxColor,
               prefixIcon: const Padding(
@@ -75,7 +78,6 @@ class MobileChatScreen extends StatelessWidget {
             ),
           ),
         ],
-        //
       ),
     );
   }

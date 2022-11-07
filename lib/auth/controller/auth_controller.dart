@@ -4,10 +4,17 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:messenger/auth/repository/auth_repository.dart';
 import 'package:flutter/material.dart';
 
+import '../../models/user_model.dart';
+
 final authControllerProvider = Provider((ref) {
   final authRepository = ref.watch(authRepositoryProvider);
   // watch is like Provider.of<AuthRepository>(constext);
   return AuthController(authRepository: authRepository, ref: ref);
+});
+
+final userDataAuthProvider = FutureProvider((ref) {
+  final authController = ref.watch(authControllerProvider);
+  return authController.getUserData();
 });
 
 class AuthController {
@@ -18,6 +25,11 @@ class AuthController {
     required this.authRepository,
     required this.ref,
   });
+
+  Future<UserModel?> getUserData() async {
+    UserModel? user = await authRepository.getCurrentUserData();
+    return user;
+  }
 
   void signInWithPhone(BuildContext context, String phoneNumber) {
     authRepository.signInWithPhone(context, phoneNumber);
@@ -39,5 +51,13 @@ class AuthController {
       ref: ref,
       context: context,
     );
+  }
+
+  Stream<UserModel> userDataById(String userId) {
+    return authRepository.userData(userId);
+  }
+
+  void setUserState(bool isOnline) {
+    authRepository.setUserState(isOnline);
   }
 }

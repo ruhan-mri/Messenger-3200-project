@@ -11,6 +11,8 @@ import 'package:messenger/common/repository/common_firebase_data.dart';
 import 'package:messenger/common/utils/utils.dart';
 import 'package:messenger/mobile_screen.dart';
 
+import '../../models/user_model.dart';
+
 final authRepositoryProvider = Provider(
   (ref) => AuthRepository(
     auth: FirebaseAuth.instance,
@@ -26,6 +28,17 @@ class AuthRepository {
     required this.auth,
     required this.firestore,
   });
+
+  Future<UserModel?> getCurrentUserData() async {
+    var userData =
+        await firestore.collection('users').doc(auth.currentUser?.uid).get();
+
+    UserModel? user;
+    if (userData.data() != null) {
+      user = UserModel.fromMap(userData.data()!);
+    }
+    return user;
+  }
 
   void signInWithPhone(BuildContext context, String phoneNumber) async {
     try {
@@ -93,16 +106,16 @@ class AuthRepository {
             );
       }
 
-      // var user = UserModel(
-      //   name: name,
-      //   uid: uid,
-      //   profilePic: photoUrl,
-      //   isOnline: true,
-      //   phoneNumber: auth.currentUser!.phoneNumber!,
-      //   groupId: [],
-      // );
+      var user = UserModel(
+        name: name,
+        uid: uid,
+        profilePic: photoUrl,
+        isOnline: true,
+        phoneNumber: auth.currentUser!.phoneNumber!,
+        groupId: [],
+      );
 
-      // await firestore.collection('users').doc(uid).set(user.toMap());
+      await firestore.collection('users').doc(uid).set(user.toMap());
 
       // ignore: use_build_context_synchronously
       Navigator.pushAndRemoveUntil(
@@ -112,6 +125,22 @@ class AuthRepository {
         ),
         (route) => false,
       );
-    } catch (e) {}
+    } catch (e) {
+      showSnackBar(context: context, content: e.toString());
+    }
+  }
+
+  Stream<UserModel> userData(String userId) {
+    return firestore.collection('users').doc(userId).snapshots().map(
+          (event) => UserModel.fromMap(
+            event.data()!,
+          ),
+        );
+  }
+
+  void setUserState(bool isOnline) async {
+    await firestore.collection('users').doc(auth.currentUser!.uid).update({
+      'isOnline': isOnline,
+    });
   }
 }

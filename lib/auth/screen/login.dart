@@ -59,41 +59,44 @@ class _LoginPageState extends ConsumerState<LoginPage> {
         elevation: 0,
         backgroundColor: backgroundColor,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(18.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            const Text('App needs to verify your phone number'),
-            const SizedBox(height: 10),
-            TextButton(
-              onPressed:
-                  pickCountry, // not use () => becz we not pass any value
-              child: const Text('Pick Country'),
-            ),
-            const SizedBox(height: 5),
-            Row(
-              children: [
-                if (country != null) Text('+${country!.phoneCode}'),
-                const SizedBox(width: 10),
-                SizedBox(
-                  width: size.width * 0.7,
-                  child: TextField(
-                    controller: phoneController,
-                    decoration: const InputDecoration(hintText: 'Phone Number'),
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: size.height * 0.5), //0.6
-            SizedBox(
-              width: 90,
-              child: Button(
-                onPressed: sendPhoneNumber,
-                text: 'NEXT',
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(18.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const Text('App needs to verify your phone number'),
+              const SizedBox(height: 10),
+              TextButton(
+                onPressed:
+                    pickCountry, // not use () => becz we not pass any value
+                child: const Text('Pick Country'),
               ),
-            ),
-          ],
+              const SizedBox(height: 5),
+              Row(
+                children: [
+                  if (country != null) Text('+${country!.phoneCode}'),
+                  const SizedBox(width: 10),
+                  SizedBox(
+                    width: size.width * 0.7,
+                    child: TextField(
+                      controller: phoneController,
+                      decoration:
+                          const InputDecoration(hintText: 'Phone Number'),
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: size.height * 0.5), //0.6
+              SizedBox(
+                width: 90,
+                child: Button(
+                  onPressed: sendPhoneNumber,
+                  text: 'NEXT',
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
